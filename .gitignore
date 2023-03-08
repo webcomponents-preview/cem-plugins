@@ -1,0 +1,5 @@
+/.npmrc
+/dist
+/node_modules
+/reports
+/*.tgz
