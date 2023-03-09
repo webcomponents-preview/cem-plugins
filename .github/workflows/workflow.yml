@@ -63,7 +63,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     strategy:
-      matrix: { dir: ["dist/cem-plugin-examples", "cem-plugin-inline-readme"] }
+      matrix: { dir: ["cem-plugin-examples", "cem-plugin-inline-readme"] }
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -82,7 +82,7 @@ jobs:
       - name: Configure npm
         run: npm config set //registry.npmjs.org/:_authToken ${{secrets.WCP_NPM_TOKEN}}
       - name: Release package
-        working-directory: ${{matrix.dir}}
+        working-directory: dist/${{matrix.dir}}
         run: npx release-it --ci
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
