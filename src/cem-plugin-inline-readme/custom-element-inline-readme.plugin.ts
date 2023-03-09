@@ -1,5 +1,3 @@
-#!/usr/bin/env ts-node
-
 import type { Plugin } from '@custom-elements-manifest/analyzer';
 import { findDeclaration } from '../utils/plugin.utils';
 
