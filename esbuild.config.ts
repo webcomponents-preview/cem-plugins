@@ -17,6 +17,7 @@ build({
   logLevel: 'error',
   plugins: [
     addPackageJson({
+      filter: /cem-plugin-.*\/index\.ts$/,
       addReadme: true,
       readmeTemplate(name: string, rootContent: any) {
         const repository = rootContent.repository?.url ?? `https://github.com/${rootContent.repository}`;
@@ -24,7 +25,8 @@ build({
       },
     }),
     addDeclarations({
-      addGlobalDeclarations: ['src/typings.d.ts'],
+      filter: /cem-plugin-.*\/index\.ts$/,
+      include: ['src/typings.d.ts'],
     }),
   ],
 });

@@ -1,15 +1,14 @@
 import type { Plugin } from 'esbuild';
 import type { Program } from 'typescript';
 import ts from 'typescript';
-import { appendFile, readFile } from 'node:fs/promises';
 
-import { basename, dirname, join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 
 type PluginOptions = {
   filter: RegExp;
+  include: string[];
   sourceRoot: string;
   outdir: string;
-  addGlobalDeclarations?: string[];
 };
 
 function reportDiagnostics(program: Program): string {
@@ -20,44 +19,27 @@ function reportDiagnostics(program: Program): string {
   });
 }
 
-async function generateDeclarations(path: string, addFrom: string[], src: string, dist: string): Promise<void> {
+async function generateDeclarations(path: string, include: string[], src: string, dist: string): Promise<void> {
   // resolve paths for package.json
-  const baseFile = basename(path, '.ts');
   const basePath = dirname(relative(src, path));
-  const declarationName = `${baseFile}.d.ts`;
   const declarationDir = join(dist, basePath);
-  const declarationPath = join(declarationDir, declarationName);
   const rootDir = dirname(path);
 
   // generate declarations
-  const program = ts.createProgram([path, ...addFrom], {
+  const program = ts.createProgram([path, ...include], {
     declaration: true,
     emitDeclarationOnly: true,
-    outFile: declarationPath,
+    outDir: declarationDir,
     rootDir,
   });
-  const result = program.emit();
+  const source = program.getSourceFile(path);
+  const result = program.emit(source);
 
-  return new Promise<void>(async (resolve, reject) => {
-    // check for errors
-    if (result.emitSkipped) {
-      console.error(reportDiagnostics(program));
-      return reject();
-    }
-
-    // add global declarations
-    await Promise.allSettled(
-      addFrom
-        .filter((path) => path.endsWith('.d.ts'))
-        .map(async (path) => {
-          const appendContent = await readFile(path, 'utf-8');
-          await appendFile(declarationPath, appendContent);
-        })
-    );
-
-    // done
-    resolve();
-  });
+  // check for errors
+  if (result.emitSkipped) {
+    console.error(reportDiagnostics(program));
+    return Promise.reject();
+  }
 }
 
 export function addDeclarations(options?: Partial<PluginOptions>): Plugin {
@@ -67,7 +49,7 @@ export function addDeclarations(options?: Partial<PluginOptions>): Plugin {
       // receive options, fill in defaults from esbuild, set fallbacks
       const {
         filter = /\.ts$/,
-        addGlobalDeclarations = [],
+        include = [],
         outdir = build.initialOptions.outdir ?? 'dist',
         sourceRoot = build.initialOptions.sourceRoot ?? 'src',
       } = options || {};
@@ -79,7 +61,7 @@ export function addDeclarations(options?: Partial<PluginOptions>): Plugin {
       // intercept plugins that are resolved
       build.onLoad({ filter }, async ({ path }) => {
         // add package.json to all targets
-        await generateDeclarations(path, addGlobalDeclarations, src, dist);
+        await generateDeclarations(path, include, src, dist);
 
         // go on as usual
         return undefined;
