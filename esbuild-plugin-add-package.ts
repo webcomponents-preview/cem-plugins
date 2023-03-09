@@ -24,7 +24,7 @@ async function generatePackage(
   dist: string
 ): Promise<void> {
   // resolve paths for package.json
-  const baseFile = basename(path);
+  const baseFile = basename(path, '.ts');
   const basePath = dirname(relative(src, path));
   const baseName = basename(basePath);
 
@@ -37,10 +37,10 @@ async function generatePackage(
   // create package.json
   const packageContent = {
     name,
-    main: baseFile.replace(/\.ts$/, '.js'),
-    module: baseFile.replace(/\.ts$/, '.js'),
-    types: baseFile.replace(/\.ts$/, '.d.ts'),
-    files: [baseFile],
+    main: `${baseFile}.js`,
+    module: `${baseFile}.js`,
+    types: `${baseFile}.d.ts`,
+    files: [`${baseFile}.*`],
     repository: rootContent.repository,
     version: rootContent.version,
     author: rootContent.author,
@@ -69,7 +69,7 @@ async function generateReadme(
 
   const readmeDir = join(dist, basePath);
   const readmePath = join(readmeDir, readmeName);
-  
+
   const [scope] = rootContent.name.split('/');
   const name = scope !== undefined ? `${scope}/${baseName}` : baseName;
 
@@ -88,7 +88,7 @@ export function addPackageJson(options?: Partial<PluginOptions>): Plugin {
     async setup(build) {
       // receive options, fill in defaults from esbuild, set fallbacks
       const {
-        filter = /\.plugin\.ts$/,
+        filter = /\.ts$/,
         packageName = 'package.json',
         rootPackage = resolve(cwd(), 'package.json'),
         addReadme = false,

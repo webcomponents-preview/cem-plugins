@@ -5,8 +5,8 @@ import { addPackageJson } from './esbuild-plugin-add-package';
 build({
   sourceRoot: 'src',
   entryPoints: [
-    'src/cem-plugin-examples/custom-element-examples.plugin.ts',
-    'src/cem-plugin-inline-readme/custom-element-inline-readme.plugin.ts',
+    'src/cem-plugin-examples/index.ts',
+    'src/cem-plugin-inline-readme/index.ts',
   ],
   // we don't mess with the default buildt output, but use the temp dir
   outdir: 'dist',

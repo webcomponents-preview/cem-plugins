@@ -66,7 +66,7 @@ export function addDeclarations(options?: Partial<PluginOptions>): Plugin {
     async setup(build) {
       // receive options, fill in defaults from esbuild, set fallbacks
       const {
-        filter = /\.plugin\.ts$/,
+        filter = /\.ts$/,
         addGlobalDeclarations = [],
         outdir = build.initialOptions.outdir ?? 'dist',
         sourceRoot = build.initialOptions.sourceRoot ?? 'src',
