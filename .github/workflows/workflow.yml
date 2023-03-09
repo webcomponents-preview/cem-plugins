@@ -73,6 +73,9 @@ jobs:
         run: npm ci
       - name: Release
         run: npx release-it --ci
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.WCP_NPM_TOKEN}}
       - name: Rebuild tag
         run: npm run build
       - uses: actions/upload-artifact@v3
@@ -85,7 +88,6 @@ jobs:
     name: Publish
     if: success() && github.ref == 'refs/heads/main'
     needs: release
-    permissions: write-all
     runs-on: ubuntu-latest
     strategy:
       matrix: { dir: ["cem-plugin-examples", "cem-plugin-inline-readme"] }
@@ -110,5 +112,4 @@ jobs:
         working-directory: dist/${{matrix.dir}}
         run: npx release-it --no-git --ci
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           NODE_AUTH_TOKEN: ${{secrets.WCP_NPM_TOKEN}}
