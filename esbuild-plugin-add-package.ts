@@ -11,6 +11,7 @@ type PluginOptions = {
 
   addReadme: boolean;
   readmeName: string;
+  readmeTemplate: (name: string, rootPackage: any) => string;
 
   sourceRoot: string;
   outdir: string;
@@ -58,7 +59,8 @@ async function generatePackage(
 
 async function generateReadme(
   path: string,
-  readmeName: string,
+  readmeName: PluginOptions['readmeName'],
+  readmeTemplate: PluginOptions['readmeTemplate'],
   rootContent: any,
   src: string,
   dist: string
@@ -73,13 +75,9 @@ async function generateReadme(
   const [scope] = rootContent.name.split('/');
   const name = scope !== undefined ? `${scope}/${baseName}` : baseName;
 
-  // create readme and write it
-  const repository = rootContent.repository?.url ?? `https://github.com/${rootContent.repository}`;
-  const readmeContent = `# ${name}\n\ns. [${rootContent.name}](${repository})\n`;
-
   // write readme
   if (!existsSync(readmeDir)) await mkdir(readmeDir, { recursive: true });
-  await writeFile(readmePath, readmeContent, 'utf-8');
+  await writeFile(readmePath, readmeTemplate(name, rootContent), 'utf-8');
 }
 
 export function addPackageJson(options?: Partial<PluginOptions>): Plugin {
@@ -93,6 +91,7 @@ export function addPackageJson(options?: Partial<PluginOptions>): Plugin {
         rootPackage = resolve(cwd(), 'package.json'),
         addReadme = false,
         readmeName = 'README.md',
+        readmeTemplate = (name: string) => `# ${name}`,
         outdir = build.initialOptions.outdir ?? 'dist',
         sourceRoot = build.initialOptions.sourceRoot ?? 'src',
       } = options || {};
@@ -111,7 +110,7 @@ export function addPackageJson(options?: Partial<PluginOptions>): Plugin {
 
         // add readme
         if (addReadme) {
-          await generateReadme(path, readmeName, rootContent, src, dist);
+          await generateReadme(path, readmeName, readmeTemplate, rootContent, src, dist);
         }
 
         // go on as usual
