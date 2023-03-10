@@ -4,10 +4,21 @@ on:
   push:
     tags:
       - "**"
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish package to npm"
+        required: false
+        type: boolean
+      deploy:
+        description: "Deploy example"
+        required: false
+        type: boolean
 
 jobs:
   build:
     name: Build
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (${{ inputs.publish }} || ${{ inputs.deploy }}))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,6 +38,7 @@ jobs:
 
   publish:
     name: Publish
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && ${{ inputs.publish }})
     needs: build
     permissions: write-all
     runs-on: ubuntu-latest
@@ -58,6 +70,7 @@ jobs:
 
   deploy:
     name: Deploy
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && ${{ inputs.deploy }})
     needs: build
     permissions:
       contents: read
