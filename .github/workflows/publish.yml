@@ -2,23 +2,15 @@ name: Publish
 
 on:
   push:
+    branches:
+      - main
     tags:
       - "**"
   workflow_dispatch:
-    inputs:
-      publish:
-        description: "Publish package to npm"
-        required: false
-        type: boolean
-      deploy:
-        description: "Deploy example"
-        required: false
-        type: boolean
 
 jobs:
   build:
     name: Build
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (${{ inputs.publish }} || ${{ inputs.deploy }}))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -38,7 +30,6 @@ jobs:
 
   publish:
     name: Publish
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && ${{ inputs.publish }})
     needs: build
     permissions: write-all
     runs-on: ubuntu-latest
@@ -67,30 +58,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           NODE_AUTH_TOKEN: ${{secrets.WCP_NPM_TOKEN}}
-
-  deploy:
-    name: Deploy
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && ${{ inputs.deploy }})
-    needs: build
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: Preview
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/configure-pages@v3
-      - uses: actions/download-artifact@v3
-        with:
-          name: latest
-          path: dist
-      - name: Upload
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: "dist"
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
