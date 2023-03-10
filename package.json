@@ -2,7 +2,7 @@
   "name": "@webcomponents-preview/cem-plugins",
   "description": "Plugins for @custom-elements-manifest/analyzer to add some more informations for WCP.",
   "repository": "webcomponents-preview/cem-plugins",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "license": "MIT",
   "author": {
     "name": "David Enke",
