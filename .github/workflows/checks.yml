@@ -10,6 +10,8 @@ on:
 
 jobs:
   lint:
+    if: |
+      !startsWith(github.event.head_commit.message, 'chore: release v')
     name: Lint
     runs-on: ubuntu-latest
     steps:
@@ -24,6 +26,8 @@ jobs:
         run: npm run lint
 
   test:
+    if: |
+      !startsWith(github.event.head_commit.message, 'chore: release v')
     name: Test
     needs: lint
     runs-on: ubuntu-latest
@@ -39,6 +43,8 @@ jobs:
         run: npm run test:ci
 
   build:
+    if: |
+      !startsWith(github.event.head_commit.message, 'chore: release v')
     name: Build
     needs: [lint, test]
     runs-on: ubuntu-latest
@@ -54,8 +60,9 @@ jobs:
         run: npm run build
 
   release:
+    if: |
+      !startsWith(github.event.head_commit.message, 'chore: release v') && github.ref == 'refs/heads/main'
     name: Release
-    if: success() && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     steps:
