@@ -8,7 +8,7 @@ A collection of plugins for the [@custom-elements-manifest/analyzer](https://git
 
 ## Plugins in this repository
 
-- [@webcomponents-preview/cem-plugin-examples](./packages/cem-plugin-examples) - Adds inline examples tagged by `@example` to the manifest of the analyzed custom element class.
-- [@webcomponents-preview/cem-plugin-inline-readme](./packages/cem-plugin-inline-readme) - Adds the provided contents to the analyzed custom element class to the manifest.
+- [@webcomponents-preview/cem-plugin-examples](https://github.com/webcomponents-preview/cem-plugins/tree/main/src/cem-plugin-examples) - Adds inline examples tagged by `@example` to the manifest of the analyzed custom element class.
+- [@webcomponents-preview/cem-plugin-inline-readme](https://github.com/webcomponents-preview/cem-plugins/tree/main/src/cem-plugin-inline-readme) - Adds the provided readme contents to the analyzed custom element class declaration.
 
 > Those plugins allow to create a manifest with additional informations that are consumed by the [WebComponents Preview client](https://github.com/webcomponents-preview/client).
