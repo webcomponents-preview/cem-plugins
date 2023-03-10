@@ -1,5 +1,6 @@
+import type { Plugin } from 'esbuild';
+
 declare module 'esbuild-copy-static-files' {
-  import type { Plugin } from 'esbuild';
   export type CopyStaticFilesOptions = {
     src: string;
     dest: string;
@@ -13,4 +14,8 @@ declare module 'esbuild-copy-static-files' {
   };
   const copyStaticFiles: (options?: Partial<CopyStaticFilesOptions>) => Plugin;
   export default copyStaticFiles;
+}
+
+declare global {
+  const fetch: typeof import('node-fetch').default;
 }
