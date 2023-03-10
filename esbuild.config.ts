@@ -1,4 +1,7 @@
 import { build } from 'esbuild';
+import { resolve } from 'node:path';
+import { readFile } from 'node:fs/promises';
+
 import { addDeclarations } from './esbuild-plugin-add-declarations';
 import { addPackageJson } from './esbuild-plugin-add-package';
 
@@ -19,9 +22,8 @@ build({
     addPackageJson({
       filter: /cem-plugin-.*\/index\.ts$/,
       addReadme: true,
-      readmeTemplate(name: string, rootContent: any) {
-        const repository = rootContent.repository?.url ?? `https://github.com/${rootContent.repository}`;
-        return `# <img align="left" src="https://github.com/webcomponents-preview/client/raw/main/src/assets/icons/logo.svg" alt="WCP Logo" height="43px"> ${name}\n\ns. [${rootContent.name}](${repository})\n`;
+      async readmeTemplate({ basePath }) {
+        return await readFile(resolve('src', basePath, 'README.md'), 'utf-8');
       },
     }),
     addDeclarations({

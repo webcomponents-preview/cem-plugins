@@ -4,14 +4,22 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { cwd } from 'node:process';
 
+import type { package as Package } from './package.d';
+
+type ReadmeTemplateContext = {
+  name: string;
+  basePath: string;
+  path: string;
+  rootPackage: Package;
+};
+
 type PluginOptions = {
   filter: RegExp;
   packageName: string;
-  rootPackage: string;
 
   addReadme: boolean;
   readmeName: string;
-  readmeTemplate: (name: string, rootPackage: any) => string;
+  readmeTemplate: (context: ReadmeTemplateContext) => string | Promise<string>;
 
   sourceRoot: string;
   outdir: string;
@@ -20,7 +28,7 @@ type PluginOptions = {
 async function generatePackage(
   path: string,
   packageName: string,
-  rootContent: any,
+  rootPackage: Package,
   src: string,
   dist: string
 ): Promise<void> {
@@ -32,7 +40,7 @@ async function generatePackage(
   const packageDir = join(dist, basePath);
   const packagePath = join(packageDir, packageName);
 
-  const [scope] = rootContent.name.split('/');
+  const [scope] = rootPackage.name.split('/');
   const name = scope !== undefined ? `${scope}/${baseName}` : baseName;
 
   // create package.json
@@ -42,14 +50,14 @@ async function generatePackage(
     module: `${baseFile}.js`,
     types: `${baseFile}.d.ts`,
     files: [`${baseFile}.*`],
-    repository: rootContent.repository,
-    version: rootContent.version,
-    author: rootContent.author,
-    license: rootContent.license,
-    publishConfig: rootContent.publishConfig,
-    type: rootContent.type,
-    peerDependencies: rootContent.peerDependencies,
-    engines: rootContent.engines,
+    repository: rootPackage.repository,
+    version: rootPackage.version,
+    author: rootPackage.author,
+    license: rootPackage.license,
+    publishConfig: rootPackage.publishConfig,
+    type: rootPackage.type,
+    peerDependencies: rootPackage.peerDependencies,
+    engines: rootPackage.engines,
   };
 
   // write package.json
@@ -61,7 +69,7 @@ async function generateReadme(
   path: string,
   readmeName: PluginOptions['readmeName'],
   readmeTemplate: PluginOptions['readmeTemplate'],
-  rootContent: any,
+  rootPackage: Package,
   src: string,
   dist: string
 ): Promise<void> {
@@ -72,12 +80,12 @@ async function generateReadme(
   const readmeDir = join(dist, basePath);
   const readmePath = join(readmeDir, readmeName);
 
-  const [scope] = rootContent.name.split('/');
+  const [scope] = rootPackage.name.split('/');
   const name = scope !== undefined ? `${scope}/${baseName}` : baseName;
 
   // write readme
   if (!existsSync(readmeDir)) await mkdir(readmeDir, { recursive: true });
-  await writeFile(readmePath, readmeTemplate(name, rootContent), 'utf-8');
+  await writeFile(readmePath, await readmeTemplate({ name, basePath, path, rootPackage }), 'utf-8');
 }
 
 export function addPackageJson(options?: Partial<PluginOptions>): Plugin {
@@ -88,10 +96,9 @@ export function addPackageJson(options?: Partial<PluginOptions>): Plugin {
       const {
         filter = /\.ts$/,
         packageName = 'package.json',
-        rootPackage = resolve(cwd(), 'package.json'),
         addReadme = false,
         readmeName = 'README.md',
-        readmeTemplate = (name: string) => `# ${name}`,
+        readmeTemplate = ({ name }) => `# ${name}`,
         outdir = build.initialOptions.outdir ?? 'dist',
         sourceRoot = build.initialOptions.sourceRoot ?? 'src',
       } = options || {};
@@ -101,16 +108,16 @@ export function addPackageJson(options?: Partial<PluginOptions>): Plugin {
       const dist = resolve(outdir);
 
       // load root package
-      const rootContent = JSON.parse(await readFile(rootPackage, 'utf-8'));
+      const rootPackage = JSON.parse(await readFile(resolve(cwd(), 'package.json'), 'utf-8'));
 
       // intercept plugins that are resolved
       build.onLoad({ filter }, async ({ path }) => {
         // add package.json
-        await generatePackage(path, packageName, rootContent, src, dist);
+        await generatePackage(path, packageName, rootPackage, src, dist);
 
         // add readme
         if (addReadme) {
-          await generateReadme(path, readmeName, readmeTemplate, rootContent, src, dist);
+          await generateReadme(path, readmeName, readmeTemplate, rootPackage, src, dist);
         }
 
         // go on as usual
