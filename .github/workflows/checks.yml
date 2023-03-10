@@ -70,10 +70,10 @@ jobs:
           git config user.name "autoreleaser"
           git config user.email "release@enke.dev"
       - name: Configure npm
-        run: npm config set //registry.npmjs.org/:_authToken ${{secrets.WCP_GITHUB_TOKEN}}
+        run: npm config set //registry.npmjs.org/:_authToken ${{secrets.WCP_NPM_TOKEN}}
       - name: Release
         run: |
           npx release-it --no-npm.publish --no-github.release --git.commitMessage='chore: release v${version}' --git.pushArgs=--follow-tags --ci
         env:
-          WCP_GITHUB_TOKEN: ${{secrets.WCP_GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.WCP_GITHUB_TOKEN}}
           NODE_AUTH_TOKEN: ${{secrets.WCP_NPM_TOKEN}}
