@@ -81,7 +81,7 @@ jobs:
         run: npm ci
       - name: Release
         run: |
-          npx release-it --no-npm.publish --github.release --github.autoGenerate --git.commitMessage="chore: release v${version}" --git.pushArgs=--follow-tags --git.pushArgs=--force --ci
+          npx release-it --no-npm.publish --github.release --github.autoGenerate --git.commitMessage='chore: release v${version}' --git.pushArgs=--follow-tags --git.pushArgs=--force --ci
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           NODE_AUTH_TOKEN: ${{secrets.WCP_NPM_TOKEN}}
