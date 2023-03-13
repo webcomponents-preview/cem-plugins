@@ -40,7 +40,7 @@ jobs:
       - name: Set matrix
         id: set-matrix
         run: |
-          echo "::set-output name=matrix::[\"$(ls -m dist | sed 's/, /","/g')\"]"
+          echo "matrix='["'$(ls -m dist | sed 's/, /","/g')'"]'" >> $GITHUB_OUTPUT
 
   publish:
     name: Publish
