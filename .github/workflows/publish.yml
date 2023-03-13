@@ -11,7 +11,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.artifacts.outputs.matrix }}
+      artifacts: ${{ steps.collect.outputs.artifacts }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -29,9 +29,9 @@ jobs:
           path: dist
       - name: Collect artifacts
         if: success()
-        id: artifacts
+        id: collect
         run: |
-          echo "matrix=$(ls dist | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          echo "artifacts=$(ls dist | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
 
   publish:
     name: Publish
@@ -39,7 +39,8 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{fromJson(needs.build.outputs.matrix)}}
+      matrix:
+        artifact: ${{fromJson(needs.build.outputs.artifacts)}}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -58,7 +59,7 @@ jobs:
       - name: Configure npm
         run: npm config set //registry.npmjs.org/:_authToken ${{secrets.WCP_NPM_TOKEN}}
       - name: Publish package
-        working-directory: dist/${{matrix.dir}}
+        working-directory: dist/${{matrix.artifact}}
         run: npx release-it --no-git --no-github.release --no-increment --ci
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
