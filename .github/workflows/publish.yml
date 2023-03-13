@@ -32,7 +32,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     strategy:
-      matrix: { dir: ["cem-plugin-examples", "cem-plugin-inline-readme"] }
+      matrix: { dir: ["cem-plugin-examples", "cem-plugin-grouping", "cem-plugin-inline-readme"] }
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
