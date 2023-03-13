@@ -1,4 +1,6 @@
 import { build } from 'esbuild';
+import glob from 'fast-glob';
+
 import { resolve } from 'node:path';
 import { readFile } from 'node:fs/promises';
 
@@ -7,8 +9,8 @@ import { addPackageJson } from './esbuild-plugin-add-package';
 
 build({
   sourceRoot: 'src',
-  entryPoints: ['src/cem-plugin-examples/index.ts', 'src/cem-plugin-inline-readme/index.ts'],
-  // we don't mess with the default buildt output, but use the temp dir
+  entryPoints: await glob('src/cem-plugin-*/index.ts'),
+  // we don't mess with the default build output, but use the temp dir
   outdir: 'dist',
   platform: 'node',
   format: 'esm',
