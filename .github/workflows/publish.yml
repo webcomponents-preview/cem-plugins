@@ -26,13 +26,29 @@ jobs:
           name: latest
           path: dist
 
+  collect-artifacts:
+    name: Collect build artifacts
+    runs-on: ubuntu-latest
+    needs: build
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: latest
+          path: dist
+      - name: Set matrix
+        id: set-matrix
+        run: |
+          echo "::set-output name=matrix::[\"$(ls -m dist | sed 's/, /","/g')\"]"
+
   publish:
     name: Publish
-    needs: build
+    needs: collect-artifacts
     permissions: write-all
     runs-on: ubuntu-latest
     strategy:
-      matrix: { dir: ["cem-plugin-examples", "cem-plugin-grouping", "cem-plugin-inline-readme"] }
+      matrix: ${{fromJson(needs.collect-artifacts.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
