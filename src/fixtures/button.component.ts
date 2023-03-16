@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 /// <reference lib="dom" />
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 type CustomElementClass = Omit<typeof HTMLElement, 'new'>;
 type CustomElement = (tagName: string) => (classOrDescriptor: CustomElementClass) => any;
 const customElement: CustomElement = () => () => null;
