@@ -15,7 +15,7 @@ type PluginOptions = {
  */
 export function customElementInlineReadmePlugin({ loadReadme }: PluginOptions): Plugin {
   return {
-    name: 'custom-element-readme',
+    name: 'custom-element-inline-readme',
     analyzePhase({ ts, node, moduleDoc }) {
       // we just look up docs for classes
       if (ts.isClassDeclaration(node)) {
