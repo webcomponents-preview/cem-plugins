@@ -2,6 +2,7 @@
 
 [![Workflow status](https://github.com/webcomponents-preview/cem-plugins/actions/workflows/checks.yml/badge.svg)](https://github.com/webcomponents-preview/cem-plugins/actions/workflows/checks.yml)
 [![@webcomponents-preview/cem-plugin-examples](https://badgen.net/npm/v/@webcomponents-preview/cem-plugin-examples/latest?label=@webcomponents-preview/cem-plugin-examples&color=cyan&icon=npm)](https://www.npmjs.com/package/@webcomponents-preview/cem-plugin-examples)
+[![@webcomponents-preview/cem-plugin-generate-readmes](https://badgen.net/npm/v/@webcomponents-preview/cem-plugin-generate-readmes/latest?label=@webcomponents-preview/cem-plugin-generate-readmes&color=cyan&icon=npm)](https://www.npmjs.com/package/@webcomponents-preview/cem-plugin-generate-readmes)
 [![@webcomponents-preview/cem-plugin-grouping](https://badgen.net/npm/v/@webcomponents-preview/cem-plugin-grouping/latest?label=@webcomponents-preview/cem-plugin-grouping&color=cyan&icon=npm)](https://www.npmjs.com/package/@webcomponents-preview/cem-plugin-grouping)
 [![@webcomponents-preview/cem-plugin-inline-readme](https://badgen.net/npm/v/@webcomponents-preview/cem-plugin-inline-readme/latest?label=@webcomponents-preview/cem-plugin-inline-readme&color=cyan&icon=npm)](https://www.npmjs.com/package/@webcomponents-preview/cem-plugin-inline-readme)
 
@@ -10,6 +11,8 @@ A collection of plugins for the [@custom-elements-manifest/analyzer](https://git
 ## Plugins in this repository
 
 - [@webcomponents-preview/cem-plugin-examples](https://github.com/webcomponents-preview/cem-plugins/tree/main/src/cem-plugin-examples) - Adds inline examples tagged by `@example` to the manifest of the analyzed custom element class.
-- [@webcomponents-preview/cem-plugin-inline-readme](https://github.com/webcomponents-preview/cem-plugins/tree/main/src/cem-plugin-inline-readme) - Adds the provided readme contents to the analyzed custom element class declaration.
+- [@webcomponents-preview/cem-plugin-generate-readmes](https://github.com/webcomponents-preview/cem-plugins/tree/main/src/cem-plugin-generate-readmes) - Generates individual README.md files for each custom element.
+- [@webcomponents-preview/cem-plugin-grouping](https://github.com/webcomponents-preview/cem-plugins/tree/main/src/cem-plugin-grouping) - Allows grouping of custom elements in the preview client by providing a group name for a custom `groups` property.
+- [@webcomponents-preview/cem-plugin-inline-readme](https://github.com/webcomponents-preview/cem-plugins/tree/main/src/cem-plugin-inline-readme) - Adds the provided readme contents to the analyzed custom element class declaration in a `readme` property.
 
 > Those plugins allow to create a manifest with additional informations that are consumed by the [WebComponents Preview client](https://github.com/webcomponents-preview/client).
