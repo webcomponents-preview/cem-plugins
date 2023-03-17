@@ -20,6 +20,12 @@ build({
   treeShaking: true,
   sourcemap: true,
   logLevel: 'error',
+  banner: {
+    js: `
+      const require = await import('module').then($=>$.createRequire(import.meta.url));
+      const __filename = await import('url').then($=>$.fileURLToPath(import.meta.url));
+    `,
+  },
   plugins: [
     addPackageJson({
       filter: /cem-plugin-.*\/index\.ts$/,
