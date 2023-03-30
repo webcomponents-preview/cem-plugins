@@ -1,7 +1,7 @@
 declare module '@custom-elements-manifest/to-markdown' {
   import type { AnalyzePhaseParams } from '@custom-elements-manifest/analyzer';
   export type Options = {
-    private: 'details' | 'hidden';
+    private: 'all' | 'details' | 'hidden';
     headingOffset: number;
     classNameFilter: string;
     omitSections: string[];
