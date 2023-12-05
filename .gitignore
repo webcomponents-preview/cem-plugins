@@ -3,4 +3,13 @@
 /dist
 /node_modules
 /reports
+
+# IDEs
+.idea/
+.vscode/
+
+# os
+.DS_Store
+
+# compressed dist files
 /*.tgz
