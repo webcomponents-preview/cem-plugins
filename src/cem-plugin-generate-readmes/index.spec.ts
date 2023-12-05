@@ -1,5 +1,7 @@
-import { existsSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync } from 'node:fs';
+import { readFile, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+import type { SourceFile } from 'typescript';
 
 // https://custom-elements-manifest.open-wc.org/analyzer/getting-started/#usage-in-the-browser
 import { ts, create, litPlugin } from '@custom-elements-manifest/analyzer/browser/index.js';
@@ -8,14 +10,15 @@ import { customElementGenerateReadmesPlugin } from '.';
 
 describe('cem-plugin-generate-readmes', () => {
   const target = join(__dirname, '.README.md');
-  const source = ts.createSourceFile(
-    join(__dirname, '../fixtures/button.component.ts'),
-    readFileSync(resolve(__dirname, '../fixtures/button.component.ts')).toString(),
-    ts.ScriptTarget.ES2015,
-    true
-  );
+  let source: SourceFile;
 
-  afterEach(() => existsSync(target) && rmSync(target));
+  beforeAll(async () => {
+    const content = await readFile(resolve(__dirname, '../fixtures/button.component.ts'), 'utf-8');
+    const path = join(__dirname, '../fixtures/button.component.ts');
+    source = ts.createSourceFile(path, content, ts.ScriptTarget.ES2015, true);
+  });
+
+  afterEach(async () => existsSync(target) && (await rm(target)));
 
   it('should render using `@custom-elements-manifest/analyzer`', () => {
     const manifest = create({
@@ -35,5 +38,16 @@ describe('cem-plugin-generate-readmes', () => {
 
     expect(manifest).toBeDefined();
     expect(existsSync(target)).toBe(true);
+  });
+
+  it('should add markdown to existing readmes', async () => {
+    await writeFile(target, '# Test\n\n<!-- Auto Generated Below -->\n\n');
+    create({
+      modules: [source],
+      plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer: 'cem', outputPath: () => target })],
+    });
+
+    const readme = await readFile(target, 'utf-8');
+    expect(readme).toContain('# Test\n\n<!-- Auto Generated Below -->');
   });
 });

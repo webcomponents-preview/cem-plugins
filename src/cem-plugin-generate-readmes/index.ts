@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 
 import type { Plugin } from '@custom-elements-manifest/analyzer';
@@ -13,9 +13,10 @@ type PluginOptions = {
    * Provide a function that provides a path to store the readme file to.
    */
   outputPath(componentPath?: string): string;
+
   /**
    * Like the `@webcomponents-preview/cem-plugin-inline-readme` plugin, we can
-   * additional add the generated readme as `readme` property to the manifest.
+   * additionally add the generated readme as `readme` property to the manifest.
    */
   addInlineReadme?: boolean;
 } & (
@@ -28,6 +29,8 @@ type PluginOptions = {
     }
 );
 
+export const GENERATOR_COMMENT = '<!-- Auto Generated Below -->';
+
 /**
  * A plugin for `@custom-elements-manifest/analyzer` that can be used to generate README.md files.
  */
@@ -38,10 +41,15 @@ export function customElementGenerateReadmesPlugin(options: PluginOptions): Plug
     analyzePhase({ ts, node, moduleDoc }) {
       // we just look up docs for classes
       if (ts.isClassDeclaration(node)) {
+        // find the declaration in the module doc
         const doc = findDeclaration<CemJSDoc & { readme: string }>(moduleDoc, node.name?.getText());
         if (!doc) return;
-        // request the output path
+
+        // request the output path, prepare the directory if necessary and read eventually existing readme
         const readmePath = resolve(outputPath(moduleDoc.path));
+        mkdirSync(dirname(readmePath), { recursive: true });
+        const existing = existsSync(readmePath) && readFileSync(readmePath, 'utf-8');
+
         // we use the markdown transformer to generate the markdown
         let markdown: string;
         if (transformer === 'cem') {
@@ -50,13 +58,23 @@ export function customElementGenerateReadmesPlugin(options: PluginOptions): Plug
           const { program, results } = analyzeText(node.getSourceFile().getText());
           markdown = transformAnalyzerResult('markdown', results, program);
         }
-        // add inline readme
-        if (options.addInlineReadme) {
-          doc.readme = markdown;
+
+        // if there is already a readme, we add the markdown below the comment
+        let readme: string;
+        if (existing) {
+          const [before] = existing.split(GENERATOR_COMMENT);
+          readme = `${before}${GENERATOR_COMMENT}\n\n${markdown}\n\n`;
+        } else {
+          readme = `${GENERATOR_COMMENT}\n\n${markdown}\n\n`;
         }
+
+        // add readme inline to manifest
+        if (options.addInlineReadme) {
+          doc.readme = readme;
+        }
+
         // write the result
-        mkdirSync(dirname(readmePath), { recursive: true });
-        writeFileSync(readmePath, markdown);
+        writeFileSync(readmePath, readme);
       }
     },
   };
