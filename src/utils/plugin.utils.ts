@@ -6,7 +6,7 @@ export function hasJsDocComments(node: CemNode): node is CemNodeWithJsDoc {
 }
 
 /**
- * Delivers a specificly named declaration from a module doc.
+ * Delivers a specifically named declaration from a module doc.
  */
 export function findDeclaration<T extends CemJSDoc = CemJSDoc>(
   moduleDoc?: CemModuleDoc,
