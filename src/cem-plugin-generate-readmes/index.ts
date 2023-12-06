@@ -63,9 +63,9 @@ export function customElementGenerateReadmesPlugin(options: PluginOptions): Plug
         let readme: string;
         if (existing.includes(GENERATOR_COMMENT)) {
           const [before] = existing.split(GENERATOR_COMMENT);
-          readme = `${before}${GENERATOR_COMMENT}\n\n${markdown}\n\n`;
+          readme = `${before}${GENERATOR_COMMENT}\n\n${markdown}`;
         } else {
-          readme = `${GENERATOR_COMMENT}\n\n${markdown}\n\n`;
+          readme = `${GENERATOR_COMMENT}\n\n${markdown}`;
         }
 
         // add readme inline to manifest
