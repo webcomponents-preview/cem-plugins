@@ -13,8 +13,8 @@ describe('cem-plugin-generate-readmes', () => {
   let source: SourceFile;
 
   beforeAll(async () => {
-    const content = await readFile(resolve(__dirname, '../fixtures/button.component.ts'), 'utf-8');
     const path = join(__dirname, '../fixtures/button.component.ts');
+    const content = await readFile(resolve(path), 'utf-8');
     source = ts.createSourceFile(path, content, ts.ScriptTarget.ES2015, true);
   });
 

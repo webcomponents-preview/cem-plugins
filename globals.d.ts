@@ -16,7 +16,7 @@ declare module '@custom-elements-manifest/to-markdown' {
 
 declare module '@custom-elements-manifest/analyzer/browser/index.js' {
   import type { Plugin } from '@custom-elements-manifest/analyzer';
-  const create: (options: { modules: any[]; plugins: Plugin[] }) => string;
+  const create: (options: { modules: any[]; plugins: Plugin[] }) => any;
   const ts: typeof import('typescript');
   const litPlugin: () => Plugin[];
   export { create, ts, litPlugin };

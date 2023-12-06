@@ -16,8 +16,11 @@ declare abstract class LitElement extends HTMLElement {}
  * A simple button fixture element
  *
  * @example
+ * # Example 1
+ *
  * ```html
  * <test-button label="Hello Moon!">Artemis is coming!</test-button>
+ * ```
  *
  * @slot - This slot will be used as a label for the button.
  * @csspart button - The button
