@@ -48,7 +48,7 @@ export function customElementGenerateReadmesPlugin(options: PluginOptions): Plug
         // request the output path, prepare the directory if necessary and read eventually existing readme
         const readmePath = resolve(outputPath(moduleDoc.path));
         mkdirSync(dirname(readmePath), { recursive: true });
-        const existing = existsSync(readmePath) && readFileSync(readmePath, 'utf-8');
+        const existing = existsSync(readmePath) ? readFileSync(readmePath, 'utf-8') : '';
 
         // we use the markdown transformer to generate the markdown
         let markdown: string;
@@ -61,7 +61,7 @@ export function customElementGenerateReadmesPlugin(options: PluginOptions): Plug
 
         // if there is already a readme, we add the markdown below the comment
         let readme: string;
-        if (existing) {
+        if (existing.includes(GENERATOR_COMMENT)) {
           const [before] = existing.split(GENERATOR_COMMENT);
           readme = `${before}${GENERATOR_COMMENT}\n\n${markdown}\n\n`;
         } else {

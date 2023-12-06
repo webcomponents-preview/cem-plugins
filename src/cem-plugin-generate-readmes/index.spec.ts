@@ -50,4 +50,15 @@ describe('cem-plugin-generate-readmes', () => {
     const readme = await readFile(target, 'utf-8');
     expect(readme).toContain('# Test\n\n<!-- Auto Generated Below -->');
   });
+
+  it('should replace markdown if comment is missing', async () => {
+    await writeFile(target, '# Test\n\n');
+    create({
+      modules: [source],
+      plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer: 'cem', outputPath: () => target })],
+    });
+
+    const readme = await readFile(target, 'utf-8');
+    expect(readme).not.toContain('# Test\n\n<!-- Auto Generated Below -->');
+  });
 });
