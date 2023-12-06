@@ -1,36 +1,50 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import type { Plugin } from '@custom-elements-manifest/analyzer';
 import { findDeclaration, hasJsDocComments } from '../utils/plugin.utils';
 
 // as the plugin is create by factory function, we can provide some options
-type PluginOptions = never;
+type PluginOptions = {
+  // the markdown file name to look for
+  exampleFileName?: string;
+};
 
 function isExampleTag(tag: CemJsDocTag): boolean {
   return tag.tagName.escapedText === 'example';
 }
 
 /**
- * Plugin for `@custom-elements-manifest/analyzer` that adds code examples
- * annotated with the `@example` tag to the manifest. So each module containing
- * class declarations with examples will receive an additional `examples`
+ * Plugin for `@custom-elements-manifest/analyzer` that adds code examples to the manifest that
+ * are either annotated with the `@example` tag or accompanied by a `example.md` markdown file.
+ *
+ * So each module with annotated or file based examples will receive an additional `examples`
  * property containing them as strings.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function customElementExamplesPlugin(_?: Partial<PluginOptions>): Plugin {
+export function customElementExamplesPlugin(options?: Partial<PluginOptions>): Plugin {
   return {
     name: 'custom-element-examples',
     analyzePhase({ ts, node, moduleDoc }) {
-      // if no docs are given, exit (through the gift shop)
-      if (!hasJsDocComments(node)) return;
+      // must be a class declaration
+      if (!ts.isClassDeclaration(node)) return;
 
-      // we just look up docs for classes
-      if (ts.isClassDeclaration(node)) {
-        // add example tags to the documenation
-        const doc = findDeclaration<CemJSDoc & { examples: string[] }>(moduleDoc, node.name?.getText());
-        if (!doc) return;
+      // read the document of the module
+      const doc = findDeclaration<CemJSDoc & { examples: string[] }>(moduleDoc, node.name?.getText());
+      if (!doc) return;
+
+      // look up for docs of classes
+      if (hasJsDocComments(node)) {
         doc.examples = node.jsDoc.reduce((all, doc) => {
           const tags = doc.tags?.filter(isExampleTag);
           return [...all, ...((tags?.map((tag) => tag.comment || '') || []) as string[])];
-        }, [] as string[]);
+        }, doc.examples ?? []);
+      }
+
+      // check for markdown files and add them as example
+      const sourceFolder = dirname(node.getSourceFile().fileName);
+      const examplesFile = resolve(sourceFolder, options?.exampleFileName || 'EXAMPLES.md');
+      if (existsSync(examplesFile)) {
+        doc.examples = [...(doc.examples ?? []), readFileSync(examplesFile, 'utf-8')];
       }
     },
   };
