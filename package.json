@@ -23,7 +23,7 @@
     "build": "node --loader ts-node/esm --no-warnings esbuild.config.ts"
   },
   "peerDependencies": {
-    "@custom-elements-manifest/analyzer": "^0.8.0"
+    "@custom-elements-manifest/analyzer": "0.8.x || 0.9.x"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "0.9.0",
