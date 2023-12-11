@@ -13,14 +13,14 @@
   },
   "type": "module",
   "scripts": {
-    "postinstall": "node --loader ts-node/esm generate-package-types.ts ./package.d.ts",
+    "postinstall": "node --loader ts-node/esm --no-warnings generate-package-types.ts ./package.d.ts",
     "lint": "eslint --ext .ts src",
     "clean": "shx rm -rf dist",
     "test": "jest",
     "test:ci": "jest --ci --passWithNoTests --reporters=default --reporters=jest-junit",
     "test:watch": "jest --watch",
     "prebuild": "npm run clean",
-    "build": "node --loader ts-node/esm esbuild.config.ts"
+    "build": "node --loader ts-node/esm --no-warnings esbuild.config.ts"
   },
   "peerDependencies": {
     "@custom-elements-manifest/analyzer": "^0.8.0"
