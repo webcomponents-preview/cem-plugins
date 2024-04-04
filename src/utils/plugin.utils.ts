@@ -2,7 +2,7 @@
  * Type guard to check if a node has jsDoc comments.
  */
 export function hasJsDocComments(node: CemNode): node is CemNodeWithJsDoc {
-  return 'jsDoc' in node && (node as CemNodeWithJsDoc).jsDoc.length > 0;
+  return 'jsDoc' in node && (node as CemNodeWithJsDoc).jsDoc?.length > 0;
 }
 
 /**
