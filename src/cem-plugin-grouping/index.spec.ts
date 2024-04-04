@@ -15,6 +15,7 @@ describe('cem-plugin-grouping', () => {
     const manifest = create({
       modules: [source],
       plugins: [...litPlugin(), customElementGroupingPlugin({ addGroups: () => ['foo'] })],
+      context: { dev: false },
     });
 
     expect(manifest.modules[0].declarations[0].groups).toEqual(['foo']);

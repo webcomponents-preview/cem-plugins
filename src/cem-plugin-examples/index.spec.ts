@@ -20,6 +20,7 @@ describe('cem-plugin-examples', () => {
     const manifest = create({
       modules: [source],
       plugins: [...litPlugin(), customElementExamplesPlugin()],
+      context: { dev: false },
     });
 
     expect(manifest.modules[0].declarations[0].examples[0]).toMatch(/^# Example 1/);
@@ -29,6 +30,7 @@ describe('cem-plugin-examples', () => {
     const manifest = create({
       modules: [source],
       plugins: [...litPlugin(), customElementExamplesPlugin()],
+      context: { dev: false },
     });
 
     expect(manifest.modules[0].declarations[0].examples[1]).toMatch(/^# Example 2/);

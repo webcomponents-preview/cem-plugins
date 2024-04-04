@@ -11,10 +11,11 @@ describe('cem-plugin-inline-readme', () => {
     const path = join(__dirname, '../fixtures/button.component.ts');
     const content = await readFile(resolve(path), 'utf-8');
     const source = ts.createSourceFile(path, content, ts.ScriptTarget.ES2015, true);
-    
+
     const manifest = create({
       modules: [source],
       plugins: [...litPlugin(), customElementInlineReadmePlugin({ loadReadme: () => '# Readme' })],
+      context: { dev: false },
     });
 
     expect(manifest.modules[0].declarations[0].readme).toEqual('# Readme');

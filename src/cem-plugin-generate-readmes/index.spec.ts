@@ -24,6 +24,7 @@ describe('cem-plugin-generate-readmes', () => {
     const manifest = create({
       modules: [source],
       plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer: 'cem', outputPath: () => target })],
+      context: { dev: false },
     });
 
     expect(manifest).toBeDefined();
@@ -34,6 +35,7 @@ describe('cem-plugin-generate-readmes', () => {
     const manifest = create({
       modules: [source],
       plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer: 'wca', outputPath: () => target })],
+      context: { dev: false },
     });
 
     expect(manifest).toBeDefined();
@@ -45,6 +47,7 @@ describe('cem-plugin-generate-readmes', () => {
     create({
       modules: [source],
       plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer: 'cem', outputPath: () => target })],
+      context: { dev: false },
     });
 
     const readme = await readFile(target, 'utf-8');
@@ -56,6 +59,7 @@ describe('cem-plugin-generate-readmes', () => {
     create({
       modules: [source],
       plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer: 'cem', outputPath: () => target })],
+      context: { dev: false },
     });
 
     const readme = await readFile(target, 'utf-8');
