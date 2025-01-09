@@ -18,8 +18,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          cache: "npm"
-          node-version: 18.14.2
+          cache: npm
+          node-version-file: .nvmrc
       - name: Install dependencies
         run: npm ci
       - name: Lint
@@ -38,8 +38,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          cache: "npm"
-          node-version: 18.14.2
+          cache: npm
+          node-version-file: .nvmrc
       - name: Install dependencies
         run: npm ci
       - name: Test
@@ -55,8 +55,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          cache: "npm"
-          node-version: 18.14.2
+          cache: npm
+          node-version-file: .nvmrc
       - name: Install dependencies
         run: npm ci
       - name: Build
@@ -74,8 +74,8 @@ jobs:
           token: ${{secrets.WCP_GITHUB_TOKEN}}
       - uses: actions/setup-node@v4
         with:
-          cache: "npm"
-          node-version: 18.14.2
+          cache: npm
+          node-version-file: .nvmrc
           registry-url: https://registry.npmjs.org/
       - name: Configure git
         run: |
