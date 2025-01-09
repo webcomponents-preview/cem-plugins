@@ -20,49 +20,44 @@ describe('cem-plugin-generate-readmes', () => {
 
   afterEach(async () => existsSync(target) && (await rm(target)));
 
-  it('should render using `@custom-elements-manifest/analyzer`', () => {
-    const manifest = create({
-      modules: [source],
-      plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer: 'cem', outputPath: () => target })],
-      context: { dev: false },
+  describe.each`
+    transformer | name
+    ${'cem'}    | ${'@custom-elements-manifest/analyzer'}
+    ${'wca'}    | ${'web-component-analyzer'}
+  `('using $name', ({ transformer }) => {
+    it('should render', () => {
+      const manifest = create({
+        modules: [source],
+        plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer, outputPath: () => target })],
+        context: { dev: false },
+      });
+
+      expect(manifest).toBeDefined();
+      expect(existsSync(target)).toBe(true);
     });
 
-    expect(manifest).toBeDefined();
-    expect(existsSync(target)).toBe(true);
-  });
+    it('should add markdown to existing readmes', async () => {
+      await writeFile(target, '# Test\n\n<!-- Auto Generated Below -->\n\n');
+      create({
+        modules: [source],
+        plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer, outputPath: () => target })],
+        context: { dev: false },
+      });
 
-  it('should render using `web-component-analyzer`', () => {
-    const manifest = create({
-      modules: [source],
-      plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer: 'wca', outputPath: () => target })],
-      context: { dev: false },
+      const readme = await readFile(target, 'utf-8');
+      expect(readme).toContain('# Test\n\n<!-- Auto Generated Below -->');
     });
 
-    expect(manifest).toBeDefined();
-    expect(existsSync(target)).toBe(true);
-  });
+    it('should replace markdown if comment is missing', async () => {
+      await writeFile(target, '# Test\n\n');
+      create({
+        modules: [source],
+        plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer, outputPath: () => target })],
+        context: { dev: false },
+      });
 
-  it('should add markdown to existing readmes', async () => {
-    await writeFile(target, '# Test\n\n<!-- Auto Generated Below -->\n\n');
-    create({
-      modules: [source],
-      plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer: 'cem', outputPath: () => target })],
-      context: { dev: false },
+      const readme = await readFile(target, 'utf-8');
+      expect(readme).not.toContain('# Test\n\n<!-- Auto Generated Below -->');
     });
-
-    const readme = await readFile(target, 'utf-8');
-    expect(readme).toContain('# Test\n\n<!-- Auto Generated Below -->');
-  });
-
-  it('should replace markdown if comment is missing', async () => {
-    await writeFile(target, '# Test\n\n');
-    create({
-      modules: [source],
-      plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer: 'cem', outputPath: () => target })],
-      context: { dev: false },
-    });
-
-    const readme = await readFile(target, 'utf-8');
-    expect(readme).not.toContain('# Test\n\n<!-- Auto Generated Below -->');
   });
 });
