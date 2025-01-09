@@ -36,6 +36,18 @@ describe('cem-plugin-generate-readmes', () => {
       expect(existsSync(target)).toBe(true);
     });
 
+    it('should use LF line endings', async () => {
+      await writeFile(target, '# Test\n\n<!-- Auto Generated Below -->\n\n');
+      create({
+        modules: [source],
+        plugins: [...litPlugin(), customElementGenerateReadmesPlugin({ transformer, outputPath: () => target })],
+        context: { dev: false },
+      });
+
+      const readme = await readFile(target, 'utf-8');
+      expect(readme).not.toContain('\r\n');
+    });
+
     it('should add markdown to existing readmes', async () => {
       await writeFile(target, '# Test\n\n<!-- Auto Generated Below -->\n\n');
       create({
