@@ -68,6 +68,9 @@ export function customElementGenerateReadmesPlugin(options: PluginOptions): Plug
           readme = `${GENERATOR_COMMENT}\n\n${markdown}`;
         }
 
+        // align line endings to LF
+        readme = readme.replace(/\r\n/g, '\n');
+
         // add readme inline to manifest
         if (options.addInlineReadme) {
           doc.readme = readme;
