@@ -1,11 +1,11 @@
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+
 import { build } from 'esbuild';
 import glob from 'fast-glob';
 
-import { resolve } from 'node:path';
-import { readFile } from 'node:fs/promises';
-
-import { addDeclarations } from './esbuild-plugin-add-declarations';
-import { addPackageJson } from './esbuild-plugin-add-package';
+import { addDeclarations } from './esbuild-plugin-add-declarations.js';
+import { addPackageJson } from './esbuild-plugin-add-package.js';
 
 build({
   sourceRoot: 'src',

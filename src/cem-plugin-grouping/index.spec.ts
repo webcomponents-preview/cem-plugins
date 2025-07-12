@@ -2,9 +2,9 @@ import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
 // https://custom-elements-manifest.open-wc.org/analyzer/getting-started/#usage-in-the-browser
-import { ts, create, litPlugin } from '@custom-elements-manifest/analyzer/browser/index.js';
+import { create, litPlugin, ts } from '@custom-elements-manifest/analyzer/browser/index.js';
 
-import { customElementGroupingPlugin } from '.';
+import { customElementGroupingPlugin } from './index.js';
 
 describe('cem-plugin-grouping', () => {
   it('should add groups to manifest', async () => {

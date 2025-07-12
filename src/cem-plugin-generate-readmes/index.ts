@@ -2,10 +2,11 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 
 import type { Plugin } from '@custom-elements-manifest/analyzer';
-import { type Options as CemOptions, customElementsManifestToMarkdown } from '@custom-elements-manifest/to-markdown';
+import type { Options as CemOptions } from '@custom-elements-manifest/to-markdown';
+import { customElementsManifestToMarkdown } from '@custom-elements-manifest/to-markdown';
 import { analyzeText, transformAnalyzerResult } from 'web-component-analyzer';
 
-import { findDeclaration } from '../utils/plugin.utils';
+import { findDeclaration } from '../utils/plugin.utils.js';
 
 // as the plugin is create by factory function, we can provide some options
 type PluginOptions = {

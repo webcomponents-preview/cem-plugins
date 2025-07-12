@@ -1,12 +1,12 @@
 import { existsSync } from 'node:fs';
 import { readFile, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import type { SourceFile } from 'typescript';
 
 // https://custom-elements-manifest.open-wc.org/analyzer/getting-started/#usage-in-the-browser
-import { ts, create, litPlugin } from '@custom-elements-manifest/analyzer/browser/index.js';
+import { create, litPlugin, ts } from '@custom-elements-manifest/analyzer/browser/index.js';
+import type { SourceFile } from 'typescript';
 
-import { customElementGenerateReadmesPlugin } from '.';
+import { customElementGenerateReadmesPlugin } from './index.js';
 
 describe('cem-plugin-generate-readmes', () => {
   const target = join(__dirname, '.README.md');

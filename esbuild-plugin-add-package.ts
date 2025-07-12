@@ -1,19 +1,20 @@
-import type { Plugin } from 'esbuild';
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { cwd } from 'node:process';
 
-import type { package as Package } from './package.d';
+import type { Plugin } from 'esbuild';
 
-type ReadmeTemplateContext = {
+import type { package as Package } from './package.d.js';
+
+interface ReadmeTemplateContext {
   name: string;
   basePath: string;
   path: string;
   rootPackage: Package;
-};
+}
 
-type PluginOptions = {
+interface PluginOptions {
   filter: RegExp;
   packageName: string;
 
@@ -23,14 +24,14 @@ type PluginOptions = {
 
   sourceRoot: string;
   outdir: string;
-};
+}
 
 async function generatePackage(
   path: string,
   packageName: string,
   rootPackage: Package,
   src: string,
-  dist: string
+  dist: string,
 ): Promise<void> {
   // resolve paths for package.json
   const baseFile = basename(path, '.ts');
@@ -71,7 +72,7 @@ async function generateReadme(
   readmeTemplate: PluginOptions['readmeTemplate'],
   rootPackage: Package,
   src: string,
-  dist: string
+  dist: string,
 ): Promise<void> {
   // resolve paths for readme
   const basePath = dirname(relative(src, path));

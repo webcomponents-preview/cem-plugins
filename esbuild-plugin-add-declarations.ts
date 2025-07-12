@@ -1,15 +1,15 @@
+import { dirname, join, relative, resolve } from 'node:path';
+
 import type { Plugin } from 'esbuild';
 import type { Program } from 'typescript';
 import ts from 'typescript';
 
-import { dirname, join, relative, resolve } from 'node:path';
-
-type PluginOptions = {
+interface PluginOptions {
   filter: RegExp;
   include: string[];
   sourceRoot: string;
   outdir: string;
-};
+}
 
 function reportDiagnostics(program: Program): string {
   return ts.formatDiagnostics(ts.getPreEmitDiagnostics(program), {

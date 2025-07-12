@@ -3,6 +3,7 @@
 import { writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { argv, cwd } from 'node:process';
+
 import { getJsonSchemaReader, getTypeScriptWriter, makeConverter } from 'typeconv';
 
 // store generated types in cwd
@@ -11,6 +12,7 @@ const dist = resolve(cwd(), path);
 
 // load schema
 const response = await fetch('https://json.schemastore.org/package.json');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- we have no types here, but trust the schema to be correct
 const { $schema, title, definitions, ...schema } = (await response.json()) as any;
 
 // as typeconv only looks inside the definitions object, we

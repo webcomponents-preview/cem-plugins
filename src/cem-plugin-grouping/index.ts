@@ -1,15 +1,16 @@
 import type { Plugin } from '@custom-elements-manifest/analyzer';
-import { findDeclaration } from '../utils/plugin.utils';
+
+import { findDeclaration } from '../utils/plugin.utils.js';
 
 // as the plugin is create by factory function, we can provide some options
-type PluginOptions = {
+interface PluginOptions {
   /**
    * Provide a function that delivers the groups for the given component path.
    * Multiple groups allow showing the same component in multiple places in the navigation.
    * The group can have subgroups if provided as path separated by `/`.
    */
   addGroups(componentPath?: string): string[];
-};
+}
 
 /**
  * A plugin for `@custom-elements-manifest/analyzer` that can be used to provide an additional `groups` property

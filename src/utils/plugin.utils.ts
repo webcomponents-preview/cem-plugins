@@ -10,7 +10,7 @@ export function hasJsDocComments(node: CemNode): node is CemNodeWithJsDoc {
  */
 export function findDeclaration<T extends CemJSDoc = CemJSDoc>(
   moduleDoc?: CemModuleDoc,
-  className?: string
+  className?: string,
 ): T | undefined {
   return moduleDoc?.declarations?.find(({ name }) => name === className) as unknown as T | undefined;
 }

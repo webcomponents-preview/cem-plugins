@@ -1,13 +1,15 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
+
 import type { Plugin } from '@custom-elements-manifest/analyzer';
-import { findDeclaration, hasJsDocComments } from '../utils/plugin.utils';
+
+import { findDeclaration, hasJsDocComments } from '../utils/plugin.utils.js';
 
 // as the plugin is create by factory function, we can provide some options
-type PluginOptions = {
+interface PluginOptions {
   // the markdown file name to look for
   exampleFileName?: string;
-};
+}
 
 function isExampleTag(tag: CemJsDocTag): boolean {
   return tag.tagName.escapedText === 'example';
@@ -20,7 +22,7 @@ function isExampleTag(tag: CemJsDocTag): boolean {
  * So each module with annotated or file based examples will receive an additional `examples`
  * property containing them as strings.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export function customElementExamplesPlugin(options?: Partial<PluginOptions>): Plugin {
   return {
     name: 'custom-element-examples',

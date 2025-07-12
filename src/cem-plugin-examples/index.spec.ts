@@ -1,11 +1,11 @@
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import type { SourceFile } from 'typescript';
 
 // https://custom-elements-manifest.open-wc.org/analyzer/getting-started/#usage-in-the-browser
-import { ts, create, litPlugin } from '@custom-elements-manifest/analyzer/browser/index.js';
+import { create, litPlugin, ts } from '@custom-elements-manifest/analyzer/browser/index.js';
+import type { SourceFile } from 'typescript';
 
-import { customElementExamplesPlugin } from '.';
+import { customElementExamplesPlugin } from './index.js';
 
 describe('cem-plugin-examples', () => {
   let source: SourceFile;

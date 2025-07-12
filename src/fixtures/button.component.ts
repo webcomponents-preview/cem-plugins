@@ -1,14 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /// <reference lib="dom" />
 
 type CustomElementClass = Omit<typeof HTMLElement, 'new'>;
 type CustomElement = (tagName: string) => (classOrDescriptor: CustomElementClass) => any;
 const customElement: CustomElement = () => () => null;
 
-type PropertyOptions = { reflect: boolean; attribute: string; type: any };
-const property = (options?: Partial<PropertyOptions>): PropertyDecorator => null;
+interface PropertyOptions {
+  reflect: boolean;
+  attribute: string;
+  type: any;
+}
+const property = (_options?: Partial<PropertyOptions>): PropertyDecorator => null;
 
-const html = (strings: TemplateStringsArray, ...values: any[]) => null;
+const html = (_strings: TemplateStringsArray, ..._values: any[]) => null;
 
 declare abstract class LitElement extends HTMLElement {}
 
