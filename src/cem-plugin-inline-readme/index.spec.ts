@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-// https://custom-elements-manifest.open-wc.org/analyzer/getting-started/#usage-in-the-browser
-import { create, litPlugin, ts } from '@custom-elements-manifest/analyzer/browser/index.js';
+import { create, ts } from '@custom-elements-manifest/analyzer/index.js';
+import { litPlugin } from '@custom-elements-manifest/analyzer/src/features/framework-plugins/lit/lit.js';
 
 import { customElementInlineReadmePlugin } from './index.js';
 

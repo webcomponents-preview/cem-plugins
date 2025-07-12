@@ -15,13 +15,19 @@ declare module '@custom-elements-manifest/to-markdown' {
   ): string;
 }
 
-declare module '@custom-elements-manifest/analyzer/browser/index.js' {
+declare module '@custom-elements-manifest/analyzer/index.js' {
   import type { Plugin } from '@custom-elements-manifest/analyzer';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const create: (options: { modules: any[]; plugins: Plugin[]; context: { dev: boolean } }) => any;
   const ts: typeof import('typescript');
-  const litPlugin: () => Plugin[];
-  export { create, litPlugin, ts };
+
+  export { create, ts };
+}
+
+declare module '@custom-elements-manifest/analyzer/src/features/framework-plugins/lit/lit.js' {
+  import type { Plugin } from '@custom-elements-manifest/analyzer';
+
+  export const litPlugin: () => Plugin[];
 }
 
 declare module 'esbuild-copy-static-files' {
@@ -40,4 +46,12 @@ declare module 'esbuild-copy-static-files' {
   }
   const copyStaticFiles: (options?: Partial<CopyStaticFilesOptions>) => Plugin;
   export default copyStaticFiles;
+}
+
+declare module '@remcovaes/web-test-runner-vite-plugin' {
+  import type { TestRunnerCoreConfig, TestRunnerPlugin } from '@web/test-runner-core';
+  import type { UserConfig } from 'vite';
+
+  export function vitePlugin(config?: UserConfig): TestRunnerPlugin;
+  export const removeViteLogging: TestRunnerCoreConfig['filterBrowserLogs'];
 }

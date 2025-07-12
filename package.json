@@ -50,7 +50,7 @@
   },
   "jest-junit": {
     "outputDirectory": "reports",
-    "outputName": "test-unit.xml",
+    "outputName": "test.junit.xml",
     "usePathForSuiteName": true
   }
 }
