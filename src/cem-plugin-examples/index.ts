@@ -5,10 +5,10 @@ import type { Plugin } from '@custom-elements-manifest/analyzer';
 
 import { findDeclaration, hasJsDocComments } from '../utils/plugin.utils.js';
 
-// as the plugin is create by factory function, we can provide some options
+// as the plugin is created by a factory function, we can provide some options
 interface PluginOptions {
   // the markdown file name to look for
-  exampleFileName?: string;
+  exampleFileName?: string | ((componentFileName: string, componentClassName?: string) => string);
 }
 
 function isExampleTag(tag: CemJsDocTag): boolean {
@@ -43,8 +43,13 @@ export function customElementExamplesPlugin(options?: Partial<PluginOptions>): P
       }
 
       // check for markdown files and add them as example
-      const sourceFolder = dirname(node.getSourceFile().fileName);
-      const examplesFile = resolve(sourceFolder, options?.exampleFileName || 'EXAMPLES.md');
+      const { fileName } = node.getSourceFile();
+      const sourceFolder = dirname(fileName);
+      const examplesFileName =
+        typeof options?.exampleFileName === 'function'
+          ? options.exampleFileName(fileName, node.name?.getText())
+          : options?.exampleFileName || 'EXAMPLES.md';
+      const examplesFile = resolve(sourceFolder, examplesFileName);
       if (existsSync(examplesFile)) {
         doc.examples = [...(doc.examples ?? []), readFileSync(examplesFile, 'utf-8')];
       }
